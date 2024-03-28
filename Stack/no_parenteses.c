@@ -78,7 +78,7 @@ double evalueateRPN(char *expression){
 }
 
 int main(){
-    char expression[] = "4 2 + 6 *";
+    char expression[] = "2 5 + 7 2 - ";
     printf("Result: %.2f\n", evalueateRPN(expression));
     return 0;
 }
