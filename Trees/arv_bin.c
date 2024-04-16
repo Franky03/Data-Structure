@@ -29,28 +29,6 @@ Tree* insere_arvore(Tree *raiz, int valor){
     }
 }
 
-// void insere_sem_recursao(Tree **raiz, int valor){
-//     Tree *novo = (Tree*) malloc(sizeof(Tree));
-//     if(!novo) return;
-//     novo->info = valor;
-//     novo->esq = NULL;
-//     novo->dir = NULL;
-//     if(!(*raiz)){
-//         *raiz = novo;
-//         return;
-//     }
-//     Tree *aux = *raiz;
-//     while(1){
-//         if(valor < aux->info){
-//             if(aux->esq) aux = aux->esq;
-//             else {
-//                 aux->esq = novo;
-//                 return;
-//             }
-//         }
-//     }
-// }
-
 void printTree2D(Tree* node, int space, char direction) {
     if (node == NULL) return;
     
@@ -106,6 +84,43 @@ int altura_arvore(Tree *raiz){
     else return 1 + alt_dir;
 }
 
+Tree* inverte_esquerda(Tree* raiz){
+    if(raiz){
+        Tree* aux = raiz->dir;
+        raiz->dir = aux->esq;
+        aux->esq = raiz;
+        raiz = aux;
+    }
+    return raiz;
+}
+
+Tree* inverte_direita(Tree* raiz){
+    if(raiz){
+        Tree* aux = raiz->esq;
+        raiz->esq = aux->dir;
+        aux->dir = raiz;
+        raiz = aux;
+    }
+    return raiz;
+}
+
+void balanceia(Tree* raiz){
+    if(raiz){
+        if(altura_arvore(raiz->esq) - altura_arvore(raiz->dir) == 2){
+            if(altura_arvore(raiz->esq->esq) - altura_arvore(raiz->esq->dir) == -1){
+                raiz->esq = inverte_esquerda(raiz->esq);
+            }
+            raiz = inverte_direita(raiz);
+        }
+        else if(altura_arvore(raiz->esq) - altura_arvore(raiz->dir) == -2){
+            if(altura_arvore(raiz->dir->esq) - altura_arvore(raiz->dir->dir) == 1){
+                raiz->dir = inverte_direita(raiz->dir);
+            }
+            raiz = inverte_esquerda(raiz);
+        }
+    }
+} // verificar isso
+
 int main(void){
     // 9,3,4,1,6,7
     Tree *raiz = cria_arvore_vazia();
@@ -116,6 +131,8 @@ int main(void){
     raiz = insere_arvore(raiz, 6);
     raiz = insere_arvore(raiz, 7);
     raiz = insere_arvore(raiz, 10);
+    raiz = insere_arvore(raiz, 8);
+
 
     printTree(raiz);
 
@@ -126,6 +143,10 @@ int main(void){
     printf("Número de nós: %d\n", conta_nos(raiz));
 
     printf("Altura da árvore: %d\n", altura_arvore(raiz));
+
+    balanceia(raiz);
+
+    printTree(raiz);
 
     return 0;
 }
