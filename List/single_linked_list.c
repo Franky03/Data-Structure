@@ -69,6 +69,14 @@ void clean(struct Node** head){
     }
 }
 
+void recursive_clean(struct Node** head){
+    if(*head == NULL) return;
+    recursive_clean(&(*head)->next);
+    printf("Removing %d\n", (*head)->data);
+    free(*head);
+    *head = NULL;
+}
+
 int main(){
     initialize(&list);
     insert(&list, 1);
@@ -77,9 +85,9 @@ int main(){
     insert(&list, 4);
     insert(&list, 5);
     insert(&list, 0);
-    remove_num(&list, 3);
     print(list);
-    clean(&list);
-    print(list);
+    recursive_clean(&list);
+
+
     return 0;
 }

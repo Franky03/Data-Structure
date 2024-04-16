@@ -104,34 +104,57 @@ Tree* inverte_direita(Tree* raiz){
     return raiz;
 }
 
-void balanceia(Tree* raiz){
-    if(raiz){
-        if(altura_arvore(raiz->esq) - altura_arvore(raiz->dir) == 2){
-            if(altura_arvore(raiz->esq->esq) - altura_arvore(raiz->esq->dir) == -1){
-                raiz->esq = inverte_esquerda(raiz->esq);
-            }
-            raiz = inverte_direita(raiz);
+Tree* balanceamento(Tree* raiz){
+    if(!raiz) return raiz;
+
+    raiz->esq = balanceamento(raiz->esq);
+    raiz->dir = balanceamento(raiz->dir);
+
+    int altura_esq = altura_arvore(raiz->esq); 
+    int altura_dir = altura_arvore(raiz->dir);
+
+    if(altura_esq - altura_dir > 1){
+        //Rotação à direita 
+        if(altura_arvore(raiz->esq->esq) - altura_arvore(raiz->esq->dir) < 0){
+            raiz->esq = inverte_esquerda(raiz->esq);
         }
-        else if(altura_arvore(raiz->esq) - altura_arvore(raiz->dir) == -2){
-            if(altura_arvore(raiz->dir->esq) - altura_arvore(raiz->dir->dir) == 1){
-                raiz->dir = inverte_direita(raiz->dir);
-            }
-            raiz = inverte_esquerda(raiz);
-        }
+        raiz = inverte_direita(raiz);
+        return raiz;
     }
-} // verificar isso
+    else if(altura_esq - altura_dir < -1){
+        //Rotação à esquerda
+        if(altura_arvore(raiz->dir->esq) - altura_arvore(raiz->dir->dir) > 0){
+            raiz->dir = inverte_direita(raiz->dir);
+        }
+        raiz = inverte_esquerda(raiz);
+        return raiz;
+    }
+
+    return raiz;
+}
+
+void balanceia_arvore(Tree** raiz){
+    if(!(*raiz)) return;
+    *raiz = balanceamento(*raiz);
+}
+
+Tree* insere_com_balanceamento(Tree* raiz, int valor){
+    raiz = insere_arvore(raiz, valor);
+    raiz = balanceamento(raiz);
+    return raiz;
+}
 
 int main(void){
     // 9,3,4,1,6,7
     Tree *raiz = cria_arvore_vazia();
-    raiz = insere_arvore(raiz, 9);
-    raiz = insere_arvore(raiz, 3);
-    raiz = insere_arvore(raiz, 4);
-    raiz = insere_arvore(raiz, 1);
-    raiz = insere_arvore(raiz, 6);
-    raiz = insere_arvore(raiz, 7);
-    raiz = insere_arvore(raiz, 10);
-    raiz = insere_arvore(raiz, 8);
+    raiz = insere_com_balanceamento(raiz, 9);
+    raiz = insere_com_balanceamento(raiz, 3);
+    raiz = insere_com_balanceamento(raiz, 4);
+    raiz = insere_com_balanceamento(raiz, 1);
+    raiz = insere_com_balanceamento(raiz, 6);
+    raiz = insere_com_balanceamento(raiz, 7);
+    raiz = insere_com_balanceamento(raiz, 10);
+    raiz = insere_com_balanceamento(raiz, 8);
 
 
     printTree(raiz);
@@ -144,9 +167,7 @@ int main(void){
 
     printf("Altura da árvore: %d\n", altura_arvore(raiz));
 
-    balanceia(raiz);
-
-    printTree(raiz);
+    // balanceia_arvore(&raiz);
 
     return 0;
 }

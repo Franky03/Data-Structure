@@ -76,11 +76,32 @@ int pilha_pop_lista(StackList* stack){
     return item;
 }
 
+void mostra_pilha(StackList* stack){
+    while(stack->top != NULL){
+        Node* node = stack->top;
+        printf("%d\n", node->data);
+        stack->top = node->next;
+        free(node);
+    }
+}
+
+StackList* inverter_pilha(StackList* stack){
+    StackList* stack_aux = cria_pilha_lista();
+    while(stack->top != NULL){
+        Node* node = stack->top;
+        stack->top = node->next;
+        stack_aux = pilha_push_lista(stack_aux, node->data);
+        free(node);
+    }
+    return stack_aux;
+}
+
 int main(){
     StackList* stack = cria_pilha_lista();
     stack = pilha_push_lista(stack, 1);
     stack = pilha_push_lista(stack, 2);
     stack = pilha_push_lista(stack, 3);
+    stack = pilha_push_lista(stack, 4);
 
     int items[5] = {};
     for(int i = 0; i < 5; i++){
